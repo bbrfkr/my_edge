@@ -16,7 +16,22 @@ describe ("check file openstack.cnf exists") do
 end
 
 describe ("check process mysqld is running") do
+  before :all do
+    sleep 5
+  end
   describe process("mysqld") do
     it { should be_running }
+  end
+end
+
+describe ("check mariadb root user is protected with password") do
+  describe command("mysql -uroot -e \"show databases;\"") do
+    its(:stderr) { should match /Access denied for user 'root'@'localhost' \(using password: NO\)/ }
+  end
+end
+
+describe ("check root user can be logined from any other hosts") do
+  describe command("mysql -uroot -ppassword -e \"show grants for root@'%'\"") do
+    its(:stdout) { should match /GRANT ALL PRIVILEGES ON \*\.\* TO 'root'@'%' IDENTIFIED BY PASSWORD '.*' WITH GRANT OPTION/ }
   end
 end
