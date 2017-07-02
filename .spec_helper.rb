@@ -7,10 +7,13 @@ require 'active_support/core_ext'
 default = IniFile.load("Projects/#{ ENV['TEST_PROJECT'] }/properties/default.ini").to_h
 test_case = IniFile.load(ENV['TEST_CASE_FILE']).to_h
 test_case = default.deep_merge!(test_case)
+env = test_case['environment'] || {}
 
 set :backend, :docker
 set :docker_url, ENV["DOCKER_HOST"]
 set :docker_image, ENV['TEST_IMAGE']
+set :env, env
+
 if test_case != false
   set_property test_case
 else
