@@ -17,7 +17,7 @@ end
 
 describe ("check process mysqld is running") do
   before :all do
-    sleep 5
+    sleep 20 
   end
   describe process("mysqld") do
     it { should be_running }

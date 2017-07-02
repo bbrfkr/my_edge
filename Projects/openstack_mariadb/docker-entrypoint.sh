@@ -7,6 +7,10 @@ if [ "$MARIADB_ROOT_PASS" = "" ] ; then
   exit 1
 fi
 
+if [ -z `ls /var/lib/mysql` ] ; then
+  mysql_install_db --datadir=/var/lib/mysql --user=mysql
+fi
+
 mysqld_safe &
 DO_CMD="mysql -uroot -e 'show databases;' 2>&1 \
         | grep \"Can't connect to local MySQL server through socket\""
