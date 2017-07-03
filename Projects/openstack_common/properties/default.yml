@@ -1,0 +1,5 @@
+image: "edge_test/openstack_common:latest"
+build_args:
+  SET_TZ: Asia/Tokyo
+environment:
+

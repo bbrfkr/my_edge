@@ -1,0 +1,4 @@
+image: "edge_test/openstack_memcached:latest"
+build_args:
+environment: 
+

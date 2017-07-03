@@ -1,18 +1,20 @@
 require 'serverspec'
 require 'docker'
-require 'inifile'
+require 'yaml'
 require 'active_support'
 require 'active_support/core_ext'
 
-default = IniFile.load("Projects/#{ ENV['TEST_PROJECT'] }/properties/default.ini").to_h
-test_case = IniFile.load(ENV['TEST_CASE_FILE']).to_h
+default = YAML.load_file("Projects/#{ ENV['TEST_PROJECT'] }/properties/default.yml").to_h
+test_case = YAML.load_file(ENV['TEST_CASE_FILE']).to_h
 test_case = default.deep_merge!(test_case)
-env = test_case['environment'] || {}
+env = test_case['container']['env'] || {}
+create_options = test_case['container']['create_options']
 
 set :backend, :docker
 set :docker_url, ENV["DOCKER_HOST"]
 set :docker_image, ENV['TEST_IMAGE']
 set :env, env
+set :docker_container_create_options, create_options
 
 if test_case != false
   set_property test_case

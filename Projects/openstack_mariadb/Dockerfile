@@ -8,6 +8,8 @@ RUN yum -y install expect
 COPY mysql_secure_installation.sh /tmp/mysql_secure_installation.sh
 COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
+EXPOSE 3306
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["mysqld_safe"]
 

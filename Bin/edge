@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
-require 'inifile'
+require 'yaml'
 require 'active_support'
 require 'active_support/core_ext'
 
 # constant
-VERSION="0.1"
+VERSION="0.2"
 
 # variable
 $rc = 0
@@ -41,14 +41,14 @@ end
 
 def show_params(project)
   if File.exists?("Projects/" + project)
-    if File.exists?("Projects/" + project + "/properties/default.ini")
-      File.open("Projects/" + project + "/properties/default.ini") do |file|
+    if File.exists?("Projects/" + project + "/properties/default.yml")
+      File.open("Projects/" + project + "/properties/default.yml") do |file|
         file.each_line do |line|
           puts line
         end
       end
     else
-      puts "ERROR: project '#{ project }' doesn't have properties/default.ini"
+      puts "ERROR: project '#{ project }' doesn't have properties/default.yml"
       $rc = 1
     end
   else
@@ -70,8 +70,10 @@ end
 
 def create_args_str(property)
   args_str = ""
-  property['args'].each do |key, value|
-    args_str += "--build-arg #{ key }=#{ value } "
+  if property['build_args'] != nil
+    property['build_args'].each do |key, value|
+      args_str += "--build-arg #{ key }=#{ value } "
+    end
   end
   return args_str
 end
@@ -79,17 +81,17 @@ end
 def exec_build(project)
   if File.exists?("Projects/" + project)
     if File.exists?("Projects/" + project + "/Dockerfile")
-      if File.exists?("Projects/" + project + "/properties/default.ini")
-        default = IniFile.load("Projects/" + project + "/properties/default.ini").to_h
-        if File.exists?("Env/#{ project }.ini")
-          property = IniFile.load("Env/#{ project }.ini").to_h
+      if File.exists?("Projects/" + project + "/properties/default.yml")
+        default = YAML.load_file("Projects/" + project + "/properties/default.yml").to_h
+        if File.exists?("Env/#{ project }.yml")
+          property = YAML.load_file("Env/#{ project }.yml").to_h
         end
         property = reverse_merge_property(property, default)
         args_str = create_args_str(property)
-        system("docker build -t #{ property['global']['image'] } #{ args_str } Projects/#{ project }")
+        system("docker build -t #{ property['image'] } #{ args_str } Projects/#{ project }")
         $rc = $?.to_i
       else
-        puts "ERROR: project '#{ project }' doesn't have properties/default.ini"
+        puts "ERROR: project '#{ project }' doesn't have properties/default.yml"
         $rc = 1
       end
     else
@@ -106,16 +108,16 @@ def exec_spec(project)
   if File.exists?("Projects/" + project)
     if File.exists?("Projects/" + project + "/properties")
       if File.exists?("Projects/" + project + "/Dockerfile")
-        if File.exists?("Projects/" + project + "/properties/default.ini")
-          default = IniFile.load("Projects/" + project + "/properties/default.ini").to_h
+        if File.exists?("Projects/" + project + "/properties/default.yml")
+          default = YAML.load_file("Projects/" + project + "/properties/default.yml").to_h
           test_case_files = Dir.glob("Projects/#{ project }/properties/*")
           tmp_rc = 0
           test_case_files.each do |test_case_file|
-            test_case = IniFile.load(test_case_file).to_h
+            test_case = YAML.load_file(test_case_file).to_h
             test_case = reverse_merge_property(test_case, default)
             args_str = create_args_str(test_case)
             ENV['TEST_PROJECT'] = project
-            ENV['TEST_IMAGE'] = test_case['global']['image']
+            ENV['TEST_IMAGE'] = test_case['image']
             ENV['TEST_CASE_FILE'] = test_case_file
             system("docker build -t #{ ENV['TEST_IMAGE'] } #{ args_str } Projects/#{ project }")
             system("rake -f .Rakefile spec")
@@ -126,7 +128,7 @@ def exec_spec(project)
           end
           $rc = tmp_rc
         else
-          puts "ERROR: project '#{ project }' doesn't have properties/default.ini"
+          puts "ERROR: project '#{ project }' doesn't have properties/default.yml"
           $rc = 1
         end
       else

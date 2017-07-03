@@ -1,0 +1,4 @@
+image: "edge_test/openstack_mariadb:latest"
+build_args:
+:environment:
+  MARIADB_ROOT_PASS: password

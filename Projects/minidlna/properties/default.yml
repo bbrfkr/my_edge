@@ -1,0 +1,4 @@
+image: "edge_test/minidlna:latest"
+build_args:
+  MEDIA_DIR: /var/lib/minidlna
+

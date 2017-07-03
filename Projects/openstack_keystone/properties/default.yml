@@ -1,0 +1,12 @@
+image: "edge_test/openstack_keystone:latest"
+build_args:
+container: 
+  env:
+    MARIADB_ROOT_PASS: password
+    KEYSTONE_DB_PASS: password
+  create_options:
+    name: test_keystone
+    HostConfig:
+      Links:
+        - "test_mariadb:mariadb"
+  
