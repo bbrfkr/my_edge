@@ -4,9 +4,17 @@ container:
   env:
     MARIADB_ROOT_PASS: password
     KEYSTONE_DB_PASS: password
+    ADMIN_PASS: &ADMIN_PASS password
+    REGION_NAME: RegionOne
+    OS_USERNAME: admin
+    OS_PASSWORD: *ADMIN_PASS
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: &DOMAIN_NAME default
+    OS_PROJECT_DOMAIN_NAME: *DOMAIN_NAME
+    OS_AUTH_URL: http://localhost:35357/v3
+    OS_IDENTITY_API_VERSION: 3
   create_options:
     name: test_keystone
     HostConfig:
       Links:
         - "test_mariadb:mariadb"
-  
