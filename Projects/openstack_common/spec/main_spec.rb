@@ -13,7 +13,7 @@ describe ("check packages are latest") do
 end
 
 describe ("check necessary packages are installed") do
-  packages = ["python-openstackclient", "openstack-selinux", "mariadb"]
+  packages = ["python-openstackclient", "openstack-selinux", "mariadb", "iproute"]
   packages.each do |pkg|
     describe package(pkg) do
       it { should be_installed }

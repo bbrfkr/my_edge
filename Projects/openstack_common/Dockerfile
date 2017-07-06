@@ -9,6 +9,7 @@ RUN yum -y install centos-release-openstack-ocata
 RUN yum -y upgrade
 RUN yum -y install python-openstackclient openstack-selinux
 RUN yum -y install mariadb
+RUN yum -y install iproute
 
 ARG SET_TZ
 ENV TZ $SET_TZ
