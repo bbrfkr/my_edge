@@ -14,7 +14,7 @@ end
 
 describe ("check keystone database is created") do
   before :all do
-    sleep 60 
+    sleep 75 
   end
   describe command("mysql -uroot -ppassword -h#{ mariadb_ip } -e 'show databases;'") do
     its(:stdout) { should match /keystone/ }

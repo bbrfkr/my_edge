@@ -1,5 +1,12 @@
 #!/bin/sh
 
+until mysql -uroot -p$MARIADB_ROOT_PASS -h$MARIADB_PORT_3306_TCP_ADDR -e "show databases;" > /dev/null
+do
+  sleep 1
+done
+echo ""
+echo "MariaDB is started"
+
 mysql -uroot -p$MARIADB_ROOT_PASS -h$MARIADB_PORT_3306_TCP_ADDR -e "show databases;" | grep "keystone"
 if [ $? -ne 0 ] ; then
   mysql -uroot -p$MARIADB_ROOT_PASS -h$MARIADB_PORT_3306_TCP_ADDR mysql <<EOF
@@ -40,7 +47,7 @@ unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
 
 apachectl
 
-openstack project list | grep admin
+openstack project list | grep admin > /dev/null 2>&1
 if [ $? -ne 0 ] ; then
   keystone-manage bootstrap \
     --bootstrap-password $ADMIN_PASS \
@@ -54,19 +61,19 @@ if [ $? -ne 0 ] ; then
     --bootstrap-internal-url http://$MY_IP:5000
 fi
 
-openstack project list | grep service
+openstack project list | grep service > /dev/null
 if [ $? -ne 0 ] ; then
   openstack project create --domain default --description "Service Project" service
 fi
 
-openstack role list | grep user
+openstack role list | grep user > /dev/null
 if [ $? -ne 0 ] ; then
   openstack role create user
 fi
 
 apachectl -k graceful-stop
 
-grep " admin_token_auth " /etc/keystone/keystone-paste.ini
+grep " admin_token_auth " /etc/keystone/keystone-paste.ini > /dev/null
 if [ $? -eq 0 ] ; then
   sed -i 's/ admin_token_auth / /g'  /etc/keystone/keystone-paste.ini
 fi
