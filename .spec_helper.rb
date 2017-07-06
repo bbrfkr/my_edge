@@ -7,8 +7,16 @@ require 'active_support/core_ext'
 default = YAML.load_file("Projects/#{ ENV['TEST_PROJECT'] }/properties/default.yml").to_h
 test_case = YAML.load_file(ENV['TEST_CASE_FILE']).to_h
 test_case = default.deep_merge!(test_case)
-env = test_case['container']['env'] || {}
-create_options = test_case['container']['create_options']
+if test_case['container'] != nil
+  env = test_case['container']['env'] || {}
+else
+  env = {}
+end
+if test_case['container'] != nil
+  create_options = test_case['container']['create_options']
+else
+  create_options = nil
+end
 
 set :backend, :docker
 set :docker_url, ENV["DOCKER_HOST"]
