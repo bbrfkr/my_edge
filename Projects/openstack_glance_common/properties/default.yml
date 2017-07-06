@@ -1,0 +1,5 @@
+image: "edge_test/openstack_glance_common:latest"
+build_args:
+container: 
+  env:
+  create_options:

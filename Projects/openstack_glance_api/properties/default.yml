@@ -1,0 +1,22 @@
+image: "edge_test/openstack_glance_api:latest"
+build_args:
+container: 
+  env:
+    MARIADB_ROOT_PASS: password
+    GLANCE_DB_PASS: password
+    GLANCE_USER_PASS: password
+    ADMIN_PASS: password
+    REGION_NAME: RegionOne
+    OS_USERNAME: admin
+    OS_PASSWORD: password
+    OS_PROJECT_NAME: admin
+    OS_USER_DOMAIN_NAME: default
+    OS_PROJECT_DOMAIN_NAME: default
+    OS_IDENTITY_API_VERSION: 3
+  create_options:
+    name: test_glance_api
+    HostConfig:
+      Links:
+        - "test_mariadb:mariadb"
+        - "test_keystone:keystone"
+        - "test_memcached:memcached"

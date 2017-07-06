@@ -1,0 +1,13 @@
+image: "edge_test/openstack_glance_api:latest"
+build_args:
+container: 
+  env:
+    GLANCE_DB_PASS: password
+    GLANCE_USER_PASS: password
+  create_options:
+    name: test_glance_registry
+    HostConfig:
+      Links:
+        - "test_mariadb:mariadb"
+        - "test_keystone:keystone"
+        - "test_memcached:memcached"
