@@ -13,7 +13,7 @@ describe ("check packages are latest") do
 end
 
 describe ("check necessary packages are installed") do
-  packages = ["python-openstackclient", "openstack-selinux"]
+  packages = ["python-openstackclient", "openstack-selinux", "mariadb"]
   packages.each do |pkg|
     describe package(pkg) do
       it { should be_installed }
@@ -26,3 +26,4 @@ describe ("check env TZ equals 'Asia/Tokyo'") do
     its(:stdout) { should match /^TZ=Asia\/Tokyo$/ }
   end
 end
+
