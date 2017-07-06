@@ -1,4 +1,5 @@
 image: "edge_test/openstack_rabbitmq:latest"
 build_args:
-environment:
-  RABBITMQ_USER_PASS: password
+container:
+  env:
+    RABBITMQ_USER_PASS: password
