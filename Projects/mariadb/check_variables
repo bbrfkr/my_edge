@@ -1,0 +1,19 @@
+check_required_var () {
+  if [ "$2" = "" ] ; then
+    echo "ERROR: required variable $1 is not set"
+    exit 1
+  fi  
+}
+
+# check variables
+check_required_var MARIADB_ROOT_PASS $MARIADB_ROOT_PASS
+
+# display variables
+echo ====================
+echo variables list
+echo "********************"
+
+echo MARIADB_ROOT_PASS=xxxxx
+
+echo ====================
+

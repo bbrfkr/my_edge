@@ -1,0 +1,5 @@
+image: "edge_test/mariadb:latest"
+build_args:
+container:
+  env:
+    MARIADB_ROOT_PASS: password
